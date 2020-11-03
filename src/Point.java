@@ -1,9 +1,13 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+import edu.princeton.cs.algs4.StdDraw;
 
 public class Point implements Comparable<Point> {
     // constructs the point (x, y)
-    private final int INF = 99999999;
-    public int x;
-    public int y;
+    private final int x;
+    private final int y;
+    public final Comparator<Point> BY_SLOP = new BySlop();
 
     public Point(int x, int y) {
         this.x = x;
@@ -12,16 +16,17 @@ public class Point implements Comparable<Point> {
 
     public void draw() {
         // draws this point
+        StdDraw.point(x, y);
     }
 
     public void drawTo(Point that) {
         // draws the line segment from this point to that point
-
+        StdDraw.line(this.x, this.y, that.x, that.y);
     }
 
     public String toString() {
         // string representation
-        return "";
+        return "(" + x + ", " + y + ")";
     }
 
     public int compareTo(Point that) {
@@ -36,15 +41,30 @@ public class Point implements Comparable<Point> {
     public double slopeTo(Point that) {
         // the slope between this point and that point
         if (that.x - this.x == 0) {
-            if (that.y > this.y) return INF;
-            return -INF;
+            if (that.y > this.y) return Double.POSITIVE_INFINITY;
+            return Double.NEGATIVE_INFINITY;
         }
-        if (that.y - this.y == 0) {
-            return 0;
-        }
+        if (that.y - this.y == 0) return 0;
         return (double) (that.y - this.y) / (double) (that.x - this.x);
     }
-//    public Comparator<Point> slopeOrder() {
-//
-//    }
+
+    //    int compare(Key v, )
+    private class BySlop implements Comparator<Point> {
+        public int compare(Point a, Point b) {
+            return Double.compare(a.slopeTo(Point.this), b.slopeTo(Point.this));
+        }
+    }
+
+    public Comparator<Point> slopeOrder(Point a, Point b) {
+        return new BySlop();
+    }
+
+    public static void main(String[] args) {
+        Point a = new Point(1, 2);
+        a.draw();
+        a.drawTo(new Point(5, 6));
+//        Point b = new Point(1, 2);
+//        Point c = new Point(1, 2);
+//        Point d = new Point(1, 2);
+    }
 }
